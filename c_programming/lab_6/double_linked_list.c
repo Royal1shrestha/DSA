@@ -5,52 +5,22 @@ struct node
 {
     int data;
     struct node *next;
+    struct node *prev;
 };
 
 struct node *head;
 struct node *temp;
-
-void createList()
-{
-    if (head == NULL)
-    {
-        int n;
-        printf("\nEnter the number of nodes: ");
-        scanf("%d", &n);
-        if (n != 0)
-        {
-            int d;
-            struct node *newnode;
-            newnode = malloc(sizeof(struct node));
-            head = newnode;
-            temp = head;
-            printf("\nEnter number to"
-                   " be inserted : ");
-            scanf("%d", &d);
-            head->data = d;
-
-            for (int i = 2; i <= n; i++)
-            {
-                newnode = malloc(sizeof(struct node));
-                temp->next = newnode;
-                printf("\nEnter number to"
-                       " be inserted : ");
-                scanf("%d", &d);
-                newnode->data = d;
-                temp = temp->next;
-            }
-        }
-        printf("\nThe list is created\n");
-    }
-    else
-        printf("\nThe list is already created\n");
-}
 
 void insert_beg(int item)
 {
     struct node *newNode = (struct node *)malloc(sizeof(struct node));
     newNode->data = item;
     newNode->next = head;
+    newNode->prev = NULL;
+    if(head!=NULL)
+    {
+        head->prev = newNode;
+    }
     head = newNode;
 }
 
@@ -61,6 +31,7 @@ void insert_end(int item)
     newNode->next = NULL;
     if (head == NULL)
     {
+        newNode->prev = NULL;
         head = newNode;
     }
     else
@@ -71,6 +42,7 @@ void insert_end(int item)
             temp = temp->next;
         }
         temp->next = newNode;
+        newNode->prev = temp;
     }
 }
 
@@ -85,7 +57,7 @@ void insert_spec(int item)
         printf("Void insertion");
         return;
     }
-    else
+    else 
     {
         temp = head;
         for (i = 0; i < pos - 1; i++)
@@ -94,6 +66,11 @@ void insert_spec(int item)
         }
         newNode->data = item;
         newNode->next = temp->next;
+        newNode->prev = temp;
+        if(temp->next!=NULL)
+        {
+            temp->next->prev = newNode;
+        }
         temp->next = newNode;
     }
 }
@@ -110,6 +87,10 @@ void delete_beg()
         temp = head;
         printf("Deleted item is %d", head->data);
         head = head->next;
+        if(head!=NULL)
+        {
+            head->prev = NULL;
+        }
         free(temp);
     }
 }
@@ -135,7 +116,7 @@ void delete_end()
         {
             temp = temp->next;
         }
-        printf("Deleted item is %d", temp->next->data);
+        printf("The deleted item is %d", temp->next->data);
         free(temp->next);
         temp->next = NULL;
     }
@@ -159,6 +140,10 @@ void delete_spec()
             temp = temp->next;
         }
         printf("Deleted item is %d", temp->next->data);
+        if(temp->next->next!=NULL)
+        {
+            temp->next->next->prev = temp;
+        }
         temp->next = temp->next->next;
         free(temp->next);
     }
@@ -187,7 +172,7 @@ int main()
 {
     int choice, n;
 
-    printf("C Program to Insert,Delete and Traverse an Element in singly linked list using switch case\n");
+    printf("C Program to Insert,Delete and Traverse an Element in doubly linked list using switch case\n");
     while (1)
     {
         printf("\n");
